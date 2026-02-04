@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "accounts",
     "wallets",
     "categories",
+    "transactions",
 ]
 
 MIDDLEWARE = [
