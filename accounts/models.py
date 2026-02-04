@@ -21,5 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        if self.first_name or self.last_name:
-            return f"{self.first_name} {self.last_name}".strip()
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        if full_name:
+            return full_name
+        return self.phone_number or "User"
