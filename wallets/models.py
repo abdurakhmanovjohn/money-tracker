@@ -26,3 +26,7 @@ class Wallet(models.Model):
     def __str__(self):
         return f"{self.name} ({self.currency})"
     
+    def adjust_balance(self, amount):
+        self.balance += amount
+        self.save(update_fields=["balance"])
+    

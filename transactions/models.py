@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction as db_transaction
 
 from wallets.models import Wallet
 from categories.models import Category
@@ -29,4 +29,22 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.amount} {self.wallet.currency}"
+    
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+
+        with db_transaction.atomic():
+            super().save(*args, **kwargs)
+        
+        if self.type == "income":
+            self.wallet.adjust_balance(self.amount)
+        
+        elif self.type == "expense":
+            self.wallet.adjust_balance(-self.amount)
+        
+        elif self.type == "transaction_in":
+            self.wallet.adjust_balance(self.amount)
+        
+        elif self.type == "transaction_out":
+            self.wallet.adjust_balance(-self.amount)
 
